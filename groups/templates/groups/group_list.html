@@ -1,0 +1,64 @@
+{% extends "groups/group_base.html" %}
+
+{% block pregroup %}
+    <div class="col-md-4">
+        <div class="content">
+            {% if user.is_authenticated %}
+            <h2>
+                Welcome Back !
+                <a href="{% url 'posts:for_user' username=user.username%}">
+                    @{{user.username}}
+                </a>
+            </h2>
+            {% endif %}
+            <h2>
+                Classes
+            </h2>
+
+            <p>
+                Welcome to the list of all online classes <br>Join a class to learn something new !!</p>
+            </p>
+        </div>
+
+        {% if user.is_authenticated and user.username == "sourabh" %}
+        <a href="{% url 'groups:create' %}" class="btn btn-warning"><span 
+            class="fa fa-plus"></span>  Create New Class</a>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block group_content %}
+    <div class="col-md-8">
+        <div class="list-group">
+            {% for group in object_list %}
+                <a class="list-group-item list-group-item-action flex-column align-items-start" href="{% url 'groups:single' slug=group.slug %}">
+                    <h3 class="mb-1">
+                        {{group.name}}
+                    </h3>
+                    <p class="mb-1">
+                        {{group.description_html|safe}}
+                    </p>
+                    <div class="d-flex w-40 justify-content-between">
+                        <small class="text-muted">
+                            <span class="badge badge-secondary">
+                                {{ group.members.count }}
+                            </span>
+                            
+                            member{{ goup.members.count|pluralize}}
+                        </small>
+
+                        <small class="text-muted">
+                            <span class="badge badge-secondary">
+                                {{ group.posts.count }}
+                            </span>
+
+                            post{{ group.posts.count|pluralize}}
+                        </small>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
