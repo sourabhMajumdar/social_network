@@ -8,4 +8,3 @@ class GrouMemberInline(admin.TabularInline):
 
 
 admin.site.register(models.Group)
-admin.site.register(models.Teachers)

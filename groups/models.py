@@ -50,11 +50,3 @@ class GroupMember(models.Model):
     class Meta:
         unique_together = ("group", "user")
 
-
-class Teachers(models.Model):
-
-    teacher_name = models.ForeignKey(
-        User, related_name='teacher_id', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.teacher_name.username
