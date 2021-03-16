@@ -13,6 +13,21 @@ from . import models
 from . import forms
 
 from django.contrib.auth import get_user_model
+from azure.ai.textanalytics import TextAnalyticsClient
+from azure.core.credentials import AzureKeyCredential
+
+
+def authenticate_client():
+    key = "8c5696f750ba4f20a54960a6e9b49309"
+    endpoint = "https://text-sentiment-api.cognitiveservices.azure.com/"
+    ta_credential = AzureKeyCredential(key)
+    text_analytics_client = TextAnalyticsClient(
+        endpoint=endpoint,
+        credential=ta_credential)
+    return text_analytics_client
+
+
+client = authenticate_client()
 
 User = get_user_model()
 
@@ -60,8 +75,20 @@ class CreatePost(LoginRequiredMixin, SelectRelatedMixin, generic.CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
-        self.object.save()
-        return super().form_valid(form)
+        #print(" Request message is ")
+        # print(self.request.POST['message'])
+        object_message = self.request.POST['message']
+
+        # perform text analytics
+        response = client.analyze_sentiment(documents=[object_message])[0]
+        print(" Response sentiment is ", response.sentiment)
+        if(response.sentiment == "positive"):
+            print("Its a positive sentiment")
+            self.object.save()
+            return super().form_valid(form)
+        else:
+            print(" Its a negative/neutral sentiment ")
+            return render(self.request, 'groups/group_list.html')
 
 
 class DeletePost(LoginRequiredMixin, SelectRelatedMixin, generic.DeleteView):

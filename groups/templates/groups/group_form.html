@@ -9,6 +9,6 @@
     <form action="{% url 'groups:create' %}" method="post" id='groupForm'>
         {% csrf_token %}
         {% bootstrap_form form %}
-        <input type="submit" class="btn btn-primary btn-large" value="Create Group">
+        <input type="submit" class="btn btn-primary btn-large" value="Create Class">
     </form>
 {% endblock %}
